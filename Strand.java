@@ -81,6 +81,44 @@ public class Strand{
 		}
 	}
 
+	public Strand(int i, int color, int colorablity){
+		if(i%2 == 0){
+			horizontal = 0;
+		}
+		else{
+			horizontal = 1;
+		}
+		this.starter = true;
+		if(color<0){
+			this.color = Math.floorMod(color, colorablity);
+		}else{
+			this.color = color;
+		}
+
+		if(color == -1){
+			realColor = BACKGROUND_COLOR;
+		}
+		else if(color >= CARPET_COLOR_DIFF.length){
+			realColor = CARPET_COLOR_DIFF[color%(CARPET_COLOR_DIFF.length -1)];
+		}
+		else{
+			realColor = CARPET_COLOR_DIFF[this.color];
+		}
+	}
+	
+	public Strand(int color){
+		this.color = color;
+		if(color == -1){
+			realColor = BACKGROUND_COLOR;
+		}
+		else if(color >= CARPET_COLOR_DIFF.length){
+			realColor = CARPET_COLOR_DIFF[color%(CARPET_COLOR_DIFF.length -1)];
+		}
+		else{
+			realColor = CARPET_COLOR_DIFF[color];
+		}
+	}
+
 	public Strand(int i, int j){
 		this.horizontal = (i+j)%2;
 	}
@@ -90,6 +128,9 @@ public class Strand{
 		return this.color;
 	}
 
+	public static Color[] getCOLORS(){
+		return CARPET_COLOR_DIFF;
+	}
 	public Color getRealColor(){
 		return this.realColor;
 	}
