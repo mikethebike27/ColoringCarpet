@@ -2421,6 +2421,33 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 		}
 	}
 
+	public void diagonalFullCSV(){
+		String[] csvList = new String[this.size];
+		for(int i = 0; i < this.size; i++){
+			csvList[i] = Integer.toString(this.carp[i+1][i].getColor()) + ", " + Integer.toString(this.carp[i+1][i+1].getColor()) + ", ";
+			for(int j = 1; 2*j+i<size; j++){
+				if(2*(j+1)+i > size){
+					csvList[i] = csvList[i] + Integer.toString(this.carp[i+1][i+2*j].getColor()) + ", " + Integer.toString(this.carp[i][i+2*j].getColor());
+				}
+				else{
+					csvList[i] = csvList[i] + Integer.toString(this.carp[i+1][i+2*j].getColor()) + ", " + Integer.toString(this.carp[i][i+2*j].getColor()) + ", ";
+				}
+			}
+			csvList[i] = csvList[i] + "\n";
+		}
+		try{
+			String filename = String.format("%s%d%s%s%s%s.txt" ,"TOP_Diagonals", this.size,"sV-", inputStarter[0] ,"sH-", inputStarter[1]);
+			FileWriter fw = new FileWriter("C:/Users/mikey//ColoringCarpet/" + filename);
+			String csv = String.join("", csvList);
+			fw.write(csv);
+			fw.flush();
+			fw.close();	
+		} catch (Exception e)
+		{
+			System.out.println("Error");
+		}
+	}
+
 	public void writePolynomialCarpCSV(){
 		String[] csvList = new String[this.size];
 		for(int i = 0; i<this.size; i++){
@@ -3093,13 +3120,21 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 	            }*/
 			}
 			else if(args.length == 3){
-				if(args[0].toLowerCase().equals("getdiag")){
+				if(args[0].toLowerCase().equals("getdiagstarter")){
 					int size = Integer.valueOf(args[1]);
 					String chosenStarter = args[2];	
 					String[] starters = chosenStarter.split(",");
 					Carpet c1 = new Carpet(size, starters);
 		            c1.createKnotCarpet(false);
 		            c1.diagonalStaterCSV();
+				}
+				else if(args[0].toLowerCase().equals("getdiagtop")){
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter = args[2];	
+					String[] starters = chosenStarter.split(",");
+					Carpet c1 = new Carpet(size, starters);
+		            c1.createKnotCarpet(false);
+		            c1.diagonalFullCSV();
 				}
 				else if(args[2].equals("true")){
 					int size = Integer.valueOf(args[0]);
@@ -3118,7 +3153,7 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 				}
 			}
 			else if(args.length == 4){
-				if(args[0].toLowerCase().equals("getdiag")){
+				if(args[0].toLowerCase().equals("getdiagstarter")){
 					int size = Integer.valueOf(args[1]);
 					String chosenStarter = args[2];	
 					int p = Integer.valueOf(args[3]);
@@ -3126,7 +3161,17 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 					Carpet c1 = new Carpet(size, p , starters);
 		            c1.createKnotCarpet(false);
 		            c1.diagonalStaterCSV();
-				}else{
+				}
+				else if(args[0].toLowerCase().equals("getdiagtop")){
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter = args[2];	
+					int p = Integer.valueOf(args[3]);
+					String[] starters = chosenStarter.split(",");
+					Carpet c1 = new Carpet(size, p , starters);
+		            c1.createKnotCarpet(false);
+		            c1.diagonalFullCSV();
+				}
+				else{
 					int size = Integer.valueOf(args[0]);
 					String chosenStarter = args[1];
 					int p = Integer.valueOf(args[2]);

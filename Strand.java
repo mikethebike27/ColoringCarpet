@@ -94,7 +94,7 @@ public class Strand{
 		}else{
 			this.color = color;
 		}
-
+		
 		if(color == -1){
 			realColor = BACKGROUND_COLOR;
 		}
@@ -104,6 +104,16 @@ public class Strand{
 		else{
 			realColor = CARPET_COLOR_DIFF[this.color];
 		}
+
+		/*if(color == -1){
+			realColor = BACKGROUND_COLOR;
+		}
+		else if(color > 0){
+			realColor = CARPET_COLOR_DIFF[1];
+		}
+		else{
+			realColor = CARPET_COLOR_DIFF[this.color];
+		}*/
 	}
 	
 	public Strand(int color){
@@ -147,6 +157,15 @@ public class Strand{
 		else{
 			realColor = CARPET_COLOR_DIFF[col];
 		}
+		/*if(color == -1){
+			realColor = BACKGROUND_COLOR;
+		}
+		else if(color > 0){
+			realColor = CARPET_COLOR_DIFF[1];
+		}
+		else{
+			realColor = CARPET_COLOR_DIFF[this.color];
+		}*/
 	}
 	//isHorizontal 
 	//isStarter
