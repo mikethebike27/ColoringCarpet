@@ -18,7 +18,8 @@ import java.math.BigInteger;
 
 
 public class Carpet{
-	private Strand[][] carp; // Double array of each strand in the carpet. It is used to generate the image
+	private Strand[][] carp; // Double array of each strand in the carpet. It is used to generate the image. 
+	//First coord is the row and second is the column so [1][2] is the 2nd row and 3rd column or down 1 to the left 2
 	private BigInteger[][] whiteSqaureCarp;
 	private int colorablity = 3; //This is the number of colors in a carpet and it is important for the way the carpet is generated
 	private boolean twoD = true; //Useless currently future uses maybe?
@@ -30,6 +31,7 @@ public class Carpet{
 	private String[] inputStarter; // The inputed set of starter strands 
 	private BigInteger[][] polynomial;
 	private BigInteger[][] cordSeq;
+	//private String[][] diagonalPeriodicFormula;
 	private boolean sumOf = false; // true if the carpet was made from the sum, difference or product of two carpets 
 	private String[] diagonalStater; 
 	private String[] regularStarter;
@@ -42,7 +44,7 @@ public class Carpet{
 	private int[][] orientation; 
 	private int aCoef;
 	private int bCoef;
-
+	//private boolean period_; 
 
 	//private Strand[] brickStarter;
 	/*
@@ -209,12 +211,8 @@ public class Carpet{
 	* 3. The next one takes two carpets that were already generated and creates the sum of the carpets
 	* 4. We don't really use this one. Future use maybe
 	*/
-	public Carpet(int size, int p){
-		this.size = size;
-		this.colorablity = p;
 
-	}
-
+	/*1*/
 	public Carpet(int size, String[] starter){
 		this.Starter = new Strand[4][size];
 		this.rows = new double[size];
@@ -224,6 +222,7 @@ public class Carpet{
 		this.carp = new Strand[size+1][size+1]; 
 	}
 
+	/*2*/
 	public Carpet(int size, int p, String[] starter){
 		this.Starter = new Strand[4][size];
 		//System.out.println(p);
@@ -236,10 +235,16 @@ public class Carpet{
 		this.carp = new Strand[size+1][size+1]; 
 	}
 
+	public Carpet(int size, int p){
+		this.colorablity = p;
+		this.size = size;
+	}
+
+	/*3*/
 	public Carpet(Carpet C1, Carpet C2, int opper){
 		sumOf = true;
-		if(C1.getColorablity() != C2.getColorablity()) throw new IllegalArgumentException("not the same colorablity");
-		this.colorablity = C1.getColorablity();
+		//if(C1.getColorablity() != C2.getColorablity()) throw new IllegalArgumentException("not the same colorablity");
+		this.colorablity = C2.getColorablity();
 		if(!(C1.getTemplate().equals(C2.getTemplate()))) throw new IllegalArgumentException("not the same template");
 		int numRows;
 		if(C1.getStarter()[0].length < C2.getStarter()[0].length){
@@ -286,6 +291,16 @@ public class Carpet{
 		this.carp = new Strand[this.size+1][this.size+1];
 	}
 
+// the constructor for getting the generalized diagonal formula
+
+	/*public Carpet(int size, int length){
+		
+		this.rows = new double[size];
+		this.size = size;
+		//this.polynomial = new BigInteger[size+1][size+1];
+		//createStarter(starter);
+		//this.carp = new Strand[size+1][size+1]; 
+	}*/
 
 	/*
 		brick version
@@ -836,7 +851,7 @@ public class Carpet{
     		catch (IOException e) {
 
     		}
-		}else if(inputStarter[0].length() > 60 || inputStarter[1].length() > 60){
+		}else if(inputStarter[0].length() > 82 || inputStarter[1].length() > 82){
 			String filename = String.format("%d%s%s%d%s%s%s%s%s%d%d.png", colorablity ,"--", "Generalized_",gridSize-1,"s1-", "TOOBIG","s2-","TOOBIG", "ab", aCoef, bCoef);
 			try{
         		ImageIO.write(img, "png", new File(filename));
@@ -881,7 +896,7 @@ public class Carpet{
 		double fullArea = carp.length*carp.length;
 		double zeroCount = 0;
 		for(int j = 0; j<carp.length; j++){
-			double[] tempArr = new double[size];
+			//double[] tempArr = new double[size];
 			double rowArea = carp.length;
 			double rowZeroCount = 0;
 			for(int i = 0; i<carp.length; i++){
@@ -895,11 +910,11 @@ public class Carpet{
 						polynomial[i][j] = BigInteger.ZERO;
 					}
 					carp[i][j] = start;
-					for (int x = i*squareSize; x < (i + 1)*squareSize; x++) {
+					/*for (int x = i*squareSize; x < (i + 1)*squareSize; x++) {
                     	for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
                         	img.setRGB(y,x, start.getRealColor().getRGB());
                     	}
-                	}
+                	}*/
 				} else if(i == 0 || (i == 1 && (j%2) == 1)){
 					if(Starter[0][j-1].getColor() == 0){
 						zeroCount++;
@@ -909,11 +924,11 @@ public class Carpet{
 						polynomial[i][j] = new BigInteger(Integer.toString(Starter[0][j-1].getColor()));
 					}
 					carp[i][j] = Starter[0][j-1];
-					for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+					/*for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
                     	for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
                         	img.setRGB(y,x, carp[i][j].getRealColor().getRGB());
                     	}
-                	}
+                	}*/
 				} else if(j == 0){
 					if(Starter[1][i-1].getColor() == 0){
 						zeroCount++;
@@ -923,11 +938,11 @@ public class Carpet{
 						polynomial[i][j] = new BigInteger(Integer.toString(Starter[1][i-1].getColor()));
 					}
 					carp[i][j] = Starter[1][i-1];
-					for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+					/*for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
                     	for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
                         	img.setRGB(y,x, carp[i][j].getRealColor().getRGB());
                     	}
-                	}
+                	}*/
 				} else if(i == 1 & j == 1){
 					if(Starter[0][j-1].getColor() == 0){
 						zeroCount++;
@@ -937,11 +952,11 @@ public class Carpet{
 						polynomial[i][j] = new BigInteger(Integer.toString(Starter[0][j-1].getColor()));
 					}
 					carp[i][j] = Starter[0][j-1];
-					for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+					/*for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
                     	for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
                         	img.setRGB(y,x, carp[i][j].getRealColor().getRGB());
                     	}
-                	}
+                	}*/
 				}
 				/*else if(i == 1 && j%2 == 1){
 					if(Starter[0][j-1].getColor() == 0){
@@ -958,11 +973,11 @@ public class Carpet{
 						polynomial[i][j] = new BigInteger(Integer.toString(Starter[1][i-1].getColor()));
 					}
 					carp[i][j] = Starter[1][i-1];
-					for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+					/*for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
                     	for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
                         	img.setRGB(y,x, carp[i][j].getRealColor().getRGB());
                     	}
-                	}
+                	}*/
 				} else{
 					if((i + j)%2 == 1){
 						Strand start = new Strand(i,j);
@@ -984,11 +999,16 @@ public class Carpet{
 						//polynomial[i][j] = temp2;
 						start.setColor(color);
 						carp[i][j] = start;
-						for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+						/*for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
                     		for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
                         		img.setRGB(y,x, start.getRealColor().getRGB());
                     		}
-                		}
+                		}*/
+                		start = null;
+                		//if(i == j && i%1000 == 0){
+                		//	System.gc();
+                		//}
+                		//System.gc();
 					}
 					else{
 						Strand start = new Strand(i,j);
@@ -1002,22 +1022,179 @@ public class Carpet{
 							zeroCount++;
 							rowZeroCount++;
 						}
-						if(i == j){
-							//System.out.println(i+","+j + ": " + color);
+						if(i == j && i%500 == 0){
+							System.out.println(i+","+j + ": " + color);
 						}
 						start.setColor(color);
 						carp[i][j] = start;
-						for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+						/*for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
                     		for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
                         		img.setRGB(y,x, start.getRealColor().getRGB());
                     		}
-                		}
+                		}*/
+                		start = null;
+                		//if(i == j && i%1000 == 0){
+                		//	System.gc();
+                		//}
+                		//System.gc();
 					}
 				}
 			}
 			if((carp.length - 1)!= j){
 				rows[j] = (double)(rowZeroCount/rowArea);
 			}	
+		}/*
+		if(sumOf){
+			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-", "idk","s2-","idk");
+			try{
+        		ImageIO.write(img, "png", new File(filename));
+    		}
+    		catch (IOException e) {
+
+    		}
+		}else if(astrik){
+			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-", "womp","s2-","womp");
+			try{
+        		ImageIO.write(img, "png", new File(filename));
+    		}
+    		catch (IOException e) {
+
+    		}
+		}else if(inputStarter[0].length() > 82 || inputStarter[1].length() > 82){
+			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-", "TOOBIG","s2-","TOOBIG");
+			try{
+        		ImageIO.write(img, "png", new File(filename));
+    		}
+    		catch (IOException e) {
+
+    		}
+		}else{
+			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-",inputStarter[0],"s2-",inputStarter[1]);
+			try{
+    	    	ImageIO.write(img, "png", new File(filename));
+	    	}
+    		catch (IOException e) {
+
+    		}
+    	}*/
+        return zeroCount/fullArea;
+	}
+
+
+
+	/*
+
+	*/
+
+
+	
+	public void createValidityCarpet(){
+		final int desiredImageSize = 10 * 550;
+		Carpet Carp = new Carpet(this.getSize(), 2);
+        int gridSize = size+1;
+        int squareSize;
+        if(desiredImageSize/gridSize == 0){
+        	System.out.println(desiredImageSize/gridSize);
+        	squareSize = 1;
+        }
+        else{
+        	squareSize = desiredImageSize/gridSize;
+        }
+        BigInteger two = new BigInteger("2");
+        BufferedImage img = new BufferedImage(gridSize * squareSize, gridSize * squareSize, BufferedImage.TYPE_INT_ARGB);
+
+		for(int j = 0; j<carp.length-3; j++){
+			for(int i = 0; i<carp.length-3; i++){
+
+				//The series of if statements is to determine if a strand is a starter strand
+				//And what type of strand it is
+
+
+				if(i < 2 || j < 2){
+					Strand start = new Strand(i,j);
+					start.setColor(-1);
+					//System.out.println(start);
+					carp[i][j] = start;
+					for (int x = i*squareSize; x < (i + 1)*squareSize; x++) {
+                    	for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
+                        	img.setRGB(y,x, start.getRealColor().getRGB());
+                    	}
+                	}
+				} else{
+					if((i + j)%2 == 0){
+						Strand start = new Strand(i,j);
+						//System.out.println("hi");
+						int temp = carp[i][j].getColorSversus();
+						int color = 1;
+						// fill in with the colorablitiy equation for 
+
+						if(Math.floorMod(2*carp[i-1][j].getColorSversus() - carp[i][j].getColorSversus() -  carp[i-2][j].getColorSversus(), 3) != 0){
+							color = 0;
+						}
+						if(Math.floorMod(2*carp[i+1][j].getColorSversus() - carp[i][j].getColorSversus() -  carp[i+2][j].getColorSversus(), 3) != 0){
+							color = 0;
+						}
+						if(Math.floorMod(2*carp[i][j].getColorSversus() - carp[i][j-1].getColorSversus() -  carp[i][j+1].getColorSversus(), 3) != 0){
+							color = 0;
+						}
+						if(i == j+1){
+							//System.out.println(i+","+j + ": " + color);
+						}
+						start.setColorVersus(color);
+						start.setColor(color);
+						//System.out.println(start);
+						//Carp.getCarp()[i,j] =start;
+						for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+                    		for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
+                        		img.setRGB(y,x, start.getRealColorV(color).getRGB());
+                    		}
+                		}
+					}
+					else{
+						Strand start = new Strand(i,j);
+						//System.out.println("hi");
+						int temp = carp[i][j].getColorSversus();
+						int color = 1;
+						// fill in with the colorablitiy equation for 
+						if(Math.floorMod(2*carp[i][j-1].getColorSversus() - carp[i][j].getColorSversus() -  carp[i][j-2].getColorSversus(), 3) != 0){
+							color = 0;
+						}
+						if(Math.floorMod(2*carp[i][j+1].getColorSversus()- carp[i][j].getColorSversus() -  carp[i][j+2].getColorSversus(), 3) != 0){
+							color = 0;
+						}
+						if(Math.floorMod(2*carp[i][j].getColorSversus() - carp[i-1][j].getColorSversus() -  carp[i+1][j].getColorSversus(), 3) != 0){
+							color = 0;
+						}
+						if(i == j+1){
+							//System.out.println(i+","+j + ": " + color);
+						}
+						/*if(i==5 && j== 4 ){
+							System.out.println(Math.floorMod(2*carp[i][j-1].getColorSversus() - carp[i][j].getColorSversus() -  carp[i][j-2].getColorSversus(), 3));
+							System.out.println(Math.floorMod(2*carp[i][j+1].getColorSversus() - carp[i][j].getColorSversus() -  carp[i][j+2].getColorSversus(), 3));
+							System.out.println(Math.floorMod(2*carp[i][j].getColorSversus() - carp[i-1][j].getColorSversus() -  carp[i+1][j].getColorSversus(), 3));
+							System.out.println(i + " and " + j + ": " + carp[i][j].getColorSversus() + " " + carp[i][j]);
+							System.out.println((i-1) + " and " + j + ": "+ carp[i-1][j].getColorSversus() + " " + carp[i-1][j]);
+							System.out.println((i-2) + " and " + j + ": "+ carp[i-2][j].getColorSversus() + " " + carp[i-2][j]);
+							System.out.println((i+1) + " and " + j + ": "+ carp[i+1][j].getColorSversus() + " " + carp[i+1][j]);
+							System.out.println((i+2) + " and " + j + ": "+ carp[i+2][j].getColorSversus() + " " + carp[i+2][j]);
+							System.out.println(i + " and " + (j-1) + ": "+ carp[i][j-1].getColorSversus() + " " + carp[i][j-1]);
+							System.out.println(i + " and " + (j+1) + ": "+ carp[i][j+1].getColorSversus() + " " + carp[i][j+1]);
+
+
+							System.out.println(color);
+						}*/
+						start.setColorVersus(color);
+						start.setColor(color);
+						//System.out.println(start);
+						//Carp.getCarp()[i,j] =start;
+						for (int x = i * squareSize; x < (i + 1) * squareSize; x++) {
+                    		for (int y = j * squareSize; y < (j + 1) * squareSize; y++) {
+                        		img.setRGB(y,x, start.getRealColorV(color).getRGB());
+                    		}
+                		}
+					}
+				}
+			}
 		}
 		if(sumOf){
 			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-", "idk","s2-","idk");
@@ -1035,7 +1212,7 @@ public class Carpet{
     		catch (IOException e) {
 
     		}
-		}else if(inputStarter[0].length() > 60 || inputStarter[1].length() > 60){
+		}else if(inputStarter[0].length() > 82 || inputStarter[1].length() > 82){
 			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-", "TOOBIG","s2-","TOOBIG");
 			try{
         		ImageIO.write(img, "png", new File(filename));
@@ -1044,7 +1221,7 @@ public class Carpet{
 
     		}
 		}else{
-			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-",inputStarter[0],"s2-",inputStarter[1]);
+			String filename = String.format("%d%s%d%s%s%s%s%s.png", colorablity ,"--", gridSize-1,"s1-",inputStarter[0],"s2-",inputStarter[1], "versus");
 			try{
     	    	ImageIO.write(img, "png", new File(filename));
 	    	}
@@ -1052,8 +1229,10 @@ public class Carpet{
 
     		}
     	}
-        return zeroCount/fullArea;
 	}
+
+
+
 
 	//This generates a carpet if you let the start pattern be the diagonal and every other strand is colored from them
 	//It first generates the section of the carpet under the diagonal then the top part
@@ -1187,7 +1366,7 @@ public class Carpet{
 				j++;
 			}
 		}
-		if(inputStarter[0].length() > 60 || inputStarter[1].length() > 60){
+		if(inputStarter[0].length() > 82 || inputStarter[1].length() > 82){
 			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"diagonal", gridSize-1,"s1-", "TOOBIG","s2-","TOOBIG");
 			try{
         		ImageIO.write(img, "png", new File(filename));
@@ -1384,7 +1563,7 @@ public class Carpet{
 
 		}
 	}
-		if(inputStarter[0].length() > 60 || inputStarter[1].length() > 60){
+		if(inputStarter[0].length() > 82 || inputStarter[1].length() > 82){
 			String filename = String.format("%d%s%d%s%s%s%s.png", colorablity ,"diagonalMinus", gridSize-1,"s1-", "TOOBIG","s2-","TOOBIG");
 			try{
         		ImageIO.write(img, "png", new File(filename));
@@ -2009,6 +2188,125 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
     	}
 	}
 
+	public void findNbricks(int p, int N){
+		//the following code is code for enumerating the vertical 2-bricks with topleft strand equal to 2 mod 3 for some power of 3
+            		/* ALL we need to know is the 8 strands located at:
+					*   (9a+1,9b+1),  (9a+1,9b+3),  (9a+1,9b+5),  (9a+1,9b+7)
+					* and  (9a,9b+6), (9a+3,9b), (9a+9,9b+3), (9a+6,9b+9)
+            		*/
+					int leng = (int) Math.pow(p, N);
+					int[][] posible = new int[50000][2*(leng-1)];
+            		int[] counts = new int[p+1];
+            		for(int i = 0; i< counts.length; i++){
+            			counts[i] = 0;
+            		}
+            		//System.out.println(counts[p]);
+            		for(int i =0; i< size/(2*leng) -2;i++){
+            			for (int j = 0;j<size/(2*leng) -2 ;j++ ) {
+            				int index1 = 2+2*leng*i;
+            				int index2 = 2+2*leng*j;
+            				int[] brick = new int[2*(leng-1)];
+            				for(int k = 0; k< brick.length/4; k++){
+            					brick[k] = carp[index1][index2+2*k].getColor(); // top inside brick
+            					brick[k+brick.length/4] = carp[index1+1+2*k][index2].getColor();// left inside brick
+            					brick[k+brick.length/2] = carp[index1+2*k][index2-1].getColor();// left grout
+            					brick[k+(3*brick.length)/4] = carp[index1-1][index2+1+2*k].getColor();// top grout
+            				}
+            				boolean flag = true; 
+            				for(int k =0;k <counts[p]; k++){
+            					boolean flag2 = true; 
+            					for(int k2 = 0; k2<brick.length; k2++){
+            						if(brick[k2] != posible[k][k2]){
+            							flag2 = false;
+            						}
+            					}
+            					if(flag2){
+            						flag = false;
+            						break;
+            					}
+            				}
+            				if(flag){
+            					posible[counts[p]] = brick;
+            					counts[p] = counts[p]+1;
+            					for(int k =0; k<counts.length; k++){
+            						if(brick[0]%p == k){
+            							counts[k] = counts[k]+1;
+            							if(k==0){
+            								for(int k2 = 0; k2 < 2*(leng-1); k2++){
+            									System.out.print(brick[k2] + " ");
+            								}
+            								System.out.println("");
+            							}
+            						}
+            					}
+            				}
+            			}
+            		}
+            		for(int i = 0; i< counts.length; i++){
+            			System.out.println(counts[i]);
+            		}
+	}
+
+	public void findNgrout(int p, int N, int s){
+		//the following code is code for enumerating the vertical 2-bricks with topleft strand equal to 2 mod 3 for some power of 3
+            		/* ALL we need to know is the 8 strands located at:
+					*   (9a+1,9b+1),  (9a+1,9b+3),  (9a+1,9b+5),  (9a+1,9b+7)
+					* and  (9a,9b+6), (9a+3,9b), (9a+9,9b+3), (9a+6,9b+9)
+            		*/
+					int leng = (int) Math.pow(p, N);
+					int lengCount = (int) Math.pow(p, s);
+					int[][] posible = new int[50000][2*(leng-1)];
+            		int[] counts = new int[lengCount+1];
+            		for(int i = 0; i< counts.length; i++){
+            			counts[i] = 0;
+            		}
+            		//System.out.println(counts[p]);
+            		for(int i =0; i< size/(2*leng) -2;i++){
+            			for (int j = 0;j<size/(2*leng) -2 ;j++ ) {
+            				int index1 = 2+2*leng*i;
+            				int index2 = 2+2*leng*j;
+            				int[] brick = new int[2*(leng-1)];
+            				for(int k = 0; k< brick.length/4; k++){
+            					brick[k] = carp[index1+2*k][index2-1].getColor();// left grout
+            					brick[k+brick.length/4] = carp[index1-1][index2+1+2*k].getColor();// top grout
+            					brick[k+brick.length/2] = carp[index1+1+2*k][index2+leng-1].getColor(); // right grout
+            					brick[k+(3*brick.length)/4] = carp[index1+leng-1][index2+2*k].getColor();// bottom grout
+            				}
+            				boolean flag = true; 
+            				for(int k =0;k <counts[counts.length-1]; k++){
+            					boolean flag2 = true; 
+            					for(int k2 = 0; k2<brick.length; k2++){
+            						if(brick[k2] != posible[k][k2]){
+            							flag2 = false;
+            						}
+            					}
+            					if(flag2){
+            						flag = false;
+            						break;
+            					}
+            				}
+            				if(flag){
+            					posible[counts[counts.length-1]] = brick;
+            					counts[counts.length-1] = counts[counts.length-1]+1;
+            					for(int k =0; k<counts.length; k++){
+            						if((carp[index1][index2].getColor())%(lengCount) == k){
+            							counts[k] = counts[k]+1;
+            							if(counts[counts.length-1] == 1){
+            								for(int k2 = 0; k2 < 2*(leng-1); k2++){
+            									System.out.print(brick[k2] + " ");
+            								}
+            								System.out.println("");
+            							}
+            						}
+            					}
+            				}
+            			}
+            		}
+            		for(int i = 0; i< counts.length; i++){
+            			System.out.println(counts[i]);
+            		}
+	}
+
 	public void whiteSquareCarpetOneGo(){
 		final int desiredImageSize = 10 * 650;
 
@@ -2099,13 +2397,15 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 	public void whiteSquareCarpet(){
 		whiteSqaureCarp = new BigInteger[size][size];
 		for(int i = 0; i<size; i++){
-			if(i == 0){
+			/*if(i == 0){
 				whiteSqaureCarp[0][0] = new BigInteger(Integer.toString(1));
 			}
 			else{
 				whiteSqaureCarp[i][0] = new BigInteger(Integer.toString(1));
 				whiteSqaureCarp[0][i] = new BigInteger(Integer.toString(2));
-			}
+			}*/
+			whiteSqaureCarp[i][0] = new BigInteger("1");
+			whiteSqaureCarp[0][i] = new BigInteger("1");
 			/*if(i%4 == 0){
 				if(i == 0){
 					whiteSqaureCarp[0][0] = new BigInteger("2");
@@ -2161,7 +2461,8 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 								img.setRGB(x, y, Strand.getCOLORS()[0].getRGB());
 							}
 							else{
-								img.setRGB(x, y, Strand.getCOLORS()[(whiteSqaureCarp[i][j].mod(cBIG)).intValue()%(Strand.getCOLORS().length-1)].getRGB());
+								//img.setRGB(x, y, Strand.getCOLORS()[(whiteSqaureCarp[i][j].mod(cBIG)).intValue()%(Strand.getCOLORS().length-1)].getRGB());
+								img.setRGB(x, y, Strand.getCOLORS()[1].getRGB());
 							}
 						//img.setRGB(x, y, Strand.getCOLORS()[Math.floorMod(whiteSqaureCarp[i][j], c)%(Strand.getCOLORS().length-1)].getRGB());
 					}
@@ -2215,6 +2516,9 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 		// A bunch of get methods
 	public Strand[][] getCarp(){
 		return this.carp;
+	}
+	public void setCarp(int i, int j, Strand s){
+		this.carp[i][j] = s;
 	}
 
 	public BigInteger[][] getCordSeq(){
@@ -2318,6 +2622,7 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 			System.out.println("Error");
 		}
 	}
+
 
 	public void writeAddCSV(BigInteger a[][], BigInteger b[][]){
 		String[] csvList = new String[a.length];
@@ -2672,8 +2977,8 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 	public static void main(String[] args){
 		//int[][] input = {{3,6,5,4,1,4,5,6,3}, {4,3,6,5,2,5,6,3,4}, {5,4,3,6,1,6,3,4,5}, {6,5,4,3,2,3,4,5,6}};
 		//ArrayList<int[]> twobytwo = new ArrayList<int[]>();
-		ArrayList<int[]> twobytwoTRY = new ArrayList<int[]>();
-		ArrayList<int[]> twobytwo012 = new ArrayList<int[]>();
+		/*ArrayList<int[]> twobytwoTRY = new ArrayList<int[]>();
+		ArrayList<int[]> twobytwo012 = new ArrayList<int[]>();*/
 		/*int[] rows = new int[6561];
 		for(int a = 0; a<3; a++){
 			for(int b = 0; b<3; b++){
@@ -2733,7 +3038,7 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 		Carpet c = new Carpet(51,perood2);
 		c.createKnotCarpet(true);
 		c.writePolynomialCarpCSV();*/
-
+		/*
 		int[] first = {-1,0,0,0,0};
 		int[] second = {-2,0,0,0,0};
 		int[] third = {-1,1,2,1,2};
@@ -2755,7 +3060,7 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 		int[] please4 = {-2,0,0,1,2};
 
 		twobytwoTRY.add(please2);
-		twobytwoTRY.add(please);
+		twobytwoTRY.add(please);*/
 		//twobytwoTRY.add(please3);
 		//twobytwoTRY.add(please4);
 		/*ArrayList<int[]> twobytwo2 = caseTester3(caseTester3(caseTester3(caseTester3(caseTester3(caseTester3(caseTester3(twobytwoTRY)))))));
@@ -2767,14 +3072,14 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 			System.out.println();
 		}*/
 
-		twobytwo012.add(first2);
+		/*twobytwo012.add(first2);
 		twobytwo012.add(second2);
 		twobytwo012.add(third2);
 		twobytwo012.add(fourth2);
 		twobytwo012.add(fifth2);
 		twobytwo012.add(sixth2);
 		twobytwo012.add(seventh);
-		ArrayList<int[]> twobytwo2 = caseTester3(caseTester3(caseTester3(twobytwo012)));
+		ArrayList<int[]> twobytwo2 = caseTester3(caseTester3(caseTester3(twobytwo012)));*/
 		/*System.out.println(twobytwo2.size());
 		for(int i = 0; i<twobytwo2.size(); i++){
 			for(int j = 0; j<twobytwo2.get(i).length; j++){
@@ -2889,7 +3194,7 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 		//Strand[][] start = irra.getStarter();
 		//System.out.println(irra.createKnotCarpet());
 		//Strand[][] irrat = irra.getCarp();
-		if(args[0].equals("diff")){
+		if(args[0].equals("diff")){ 
 			if(args.length == 4){
 				int size = Integer.valueOf(args[1]);
 				String chosenStarter1 = args[2];
@@ -2907,21 +3212,35 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 	            String chosenStarter2 = args[3];
 	            String[] starters2 = chosenStarter2.split(",");
 	            int p = Integer.valueOf(args[4]);
-	            Carpet c1 = new Carpet(size, starters1);
-	            Carpet c2 = new Carpet(size, starters2);
-	            Carpet c3 = new Carpet(c1, c2, -1);
-	            c3.createKnotCarpet(false);
-			}else if(args.length == 6){
-				int size = Integer.valueOf(args[1]);
-				String chosenStarter1 = args[2];
-	            String[] starters1 = chosenStarter1.split(",");
-	            String chosenStarter2 = args[3];
-	            String[] starters2 = chosenStarter2.split(",");
-	            int p = Integer.valueOf(args[4]);
 	            Carpet c1 = new Carpet(size,p, starters1);
 	            Carpet c2 = new Carpet(size,p, starters2);
 	            Carpet c3 = new Carpet(c1, c2, -1);
-	            c3.createKnotCarpetDiag();
+	            c3.createKnotCarpet(false);
+			}else if(args.length == 6){
+				if(args[5].toLowerCase().equals("diag")){
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter1 = args[2];
+		            String[] starters1 = chosenStarter1.split(",");
+		            String chosenStarter2 = args[3];
+	    	        String[] starters2 = chosenStarter2.split(",");
+	        	    int p = Integer.valueOf(args[4]);
+	            	Carpet c1 = new Carpet(size,p, starters1);
+	        	    Carpet c2 = new Carpet(size,p, starters2);
+	            	Carpet c3 = new Carpet(c1, c2, -1);
+	            	c3.createKnotCarpetDiag();
+				}else{
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter1 = args[2];
+	            	String[] starters1 = chosenStarter1.split(",");
+	            	String chosenStarter2 = args[3];
+	            	String[] starters2 = chosenStarter2.split(",");
+	            	int p1 = Integer.valueOf(args[4]);
+	            	int p2 = Integer.valueOf(args[5]);
+	            	Carpet c1 = new Carpet(size,p1, starters1);
+	            	Carpet c2 = new Carpet(size,p2, starters2);
+	            	Carpet c3 = new Carpet(c1, c2, -1);
+	            	c3.createKnotCarpet(false);
+				}
 			}
 		}
 		else if(args[0].equals("prod")){
@@ -3001,10 +3320,21 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 		}
 		else{
 			if(args.length == 1){
-				int[] primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997};
+				//int[] primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997};
+				//String[] t = {"012111000102102102021120012111111111111111111111111111000102021120120120012111000","021111120210210210222012021111111111111111111111111111120210222012012012021111120"};
+				/*for(int i = 0; i<82; i++){
+					String t1 = t[0].substring(0,i+1) + "_0";
+					String t2 = t[1].substring(0,i+1) + "_0";
+					String[] t_star = {t2,t1}; 
+					//System.out.println(t_star);
+					Carpet c1 = new Carpet(81, 3, t_star);
+					c1.createKnotCarpetDiagMinus(true);
+				}	*/				
+				
 				//int size = Integer.valueOf(args[0]);
-				int size = 243;
-				for(int x = 0; x<3; x++){
+				//
+				//int size = 243;
+				/*for(int x = 0; x<3; x++){
 					for(int y = 0; y<3; y++){
 						for(int z = 0; z<3; z++){
 							String temp1 = "_"+ Integer.toString(x) + Integer.toString(y) + Integer.toString(z);
@@ -3019,7 +3349,16 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 							cs.diagonalStaterCSV();
 						}
 					}
-				}
+				}*/
+				/*int size = 243;
+						int p = 9;
+						//String chosenStarter = "_172247827752,_247827752172";
+						String chosenStarter = "_1122,_2112";
+						String[] starters = chosenStarter.split(",");
+						int firstty = 2;
+						Carpet c1 = new Carpet(size, p, starters, firstty);
+						c1.whiteSquareCarpetOneGo();*/
+						//c1.CreatewhiteSquareCarpet(p);
 				/*for(int i = 3; i < 27; i++){
 					if(primes[i]*primes[i]*primes[i] < 9100){
 						int size = primes[i]*primes[i]*primes[i]+1;
@@ -3150,46 +3489,54 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
     	       		String[] starters = chosenStarter.split(",");
 	            	Carpet c1 = new Carpet(size, p , starters);
             		c1.createKnotCarpet(false);
-				}
-			}
-			else if(args.length == 4){
-				if(args[0].toLowerCase().equals("getdiagstarter")){
-					int size = Integer.valueOf(args[1]);
-					String chosenStarter = args[2];	
-					int p = Integer.valueOf(args[3]);
-					String[] starters = chosenStarter.split(",");
-					Carpet c1 = new Carpet(size, p , starters);
-		            c1.createKnotCarpet(false);
-		            c1.diagonalStaterCSV();
-				}
-				else if(args[0].toLowerCase().equals("getdiagtop")){
-					int size = Integer.valueOf(args[1]);
-					String chosenStarter = args[2];	
-					int p = Integer.valueOf(args[3]);
-					String[] starters = chosenStarter.split(",");
-					Carpet c1 = new Carpet(size, p , starters);
-		            c1.createKnotCarpet(false);
-		            c1.diagonalFullCSV();
-				}
-				else{
-					int size = Integer.valueOf(args[0]);
-					String chosenStarter = args[1];
-					int p = Integer.valueOf(args[2]);
-	    	        String[] starters = chosenStarter.split(",");
-		            Carpet c1 = new Carpet(size,p, starters);
-		            if(args[3].equals("Minus") || args[3].equals("minus")){
-		            	c1.createKnotCarpetDiagMinus(true);
-		            }
-		            else{
-		            	c1.createKnotCarpetDiag();
-		            }
-	            	Strand[][] Carpy = c1.getCarp();
-		            /*for(int i = 0; i<12; i++){
-		            	for(int j = 0; j<12; j++){
-		            		System.out.print(Carpy[i][j]);
-		            	}
-		            	System.out.println();
-		            }*/
+            		//System.out.println(c1.carp[1][2].getColor());
+
+            		//the following code is code for enumerating the vertical 2-bricks with topleft strand equal to 2 mod 3 for some power of 3
+            		/* ALL we need to know is the 8 strands located at:
+					*   (9a+1,9b+1),  (9a+1,9b+3),  (9a+1,9b+5),  (9a+1,9b+7)
+					* and  (9a,9b+6), (9a+3,9b), (9a+9,9b+3), (9a+6,9b+9)
+            		*/
+
+            		/*for(int i =0; i< size/18 -2;i++){
+            			for (int j = 0;j<size/18 -2 ;j++ ) {
+            				int index1 = 2+18*i;
+            				int index2 = 2+18*j;
+            				int[] brick = {c1.carp[index1][index2].getColor(), c1.carp[index1][index2+2].getColor(), c1.carp[index1][index2+4].getColor(), c1.carp[index1][index2+6].getColor(),
+            				c1.carp[index1-1][index2+5].getColor(),c1.carp[index1+2][index2-1].getColor(),c1.carp[index1+8][index2+2].getColor(),c1.carp[index1+5][index2+8].getColor()};
+            				boolean flag = true; 
+            				for(int k =0;k <count; k++){
+            					if(brick[0] == posible[k][0] && brick[1] == posible[k][1] && brick[2] == posible[k][2] && brick[3] == posible[k][3]
+            					&& brick[4] == posible[k][4] && brick[5] == posible[k][5] && brick[6] == posible[k][6] && brick[7] == posible[k][7]){
+            						flag = false;
+            					}
+            				}
+            				if(flag){
+            					posible[count] = brick;
+            					count++;
+            					if(brick[0] == 2 || brick[0] == 5 || brick[0] == 8 || brick[0] ==11 || brick[0] == 14 || brick[0] == 17 || brick[0] == 20 || brick[0] == 23 || brick[0] == 26){
+            						System.out.print(brick[0]+ " " + brick[1]+ " " + brick[2]+ " " + brick[3] + " " + brick[4]+ " " + brick[5]+ " " + brick[6]+ " " + brick[7] +
+            						 ": extra" + c1.carp[index1+1][index2].getColor());
+            						System.out.println();
+            						count2++;
+            					}
+            					else if(brick[0] == 3 || brick[0] == 0 || brick[0] == 6 || brick[0] == 9 || brick[0] == 12 || brick[0] == 15 || brick[0] == 18 || brick[0] == 21 || brick[0] == 24){
+            						//System.out.print(brick[0]+ " " + brick[1]+ " " + brick[2]+ " " + brick[3]);
+            						System.out.println();
+            						count0++;
+            					}
+            					else{
+            						count1++;
+            					}
+            				}
+            			}
+            		}
+            		System.out.println(count);
+            		System.out.println(count0);
+            		System.out.println(count1);
+            		System.out.println(count2);*/
+
+            		//the following code is code for enumerating the vertical 1-bricks with topleft strand equal to 2 mod 3 for some power of 3
+
 				}
 			}
 			else if(args.length == 5){
@@ -3234,26 +3581,55 @@ System.out.println(Math.floorMod((colorablity-2)*(carp[xLoc-1][2+j/2].getColor()
 				}
 			}
 			else if(args.length == 6){
-				int size = Integer.valueOf(args[1]);
-				String chosenStarter = args[2];
-				String[] starters = chosenStarter.split(",");
-				int p = Integer.valueOf(args[3]);
-				int acof = Integer.valueOf(args[4]);
-				int bcof = Integer.valueOf(args[5]);
-				Carpet c1 = new Carpet(size, p, starters, acof, bcof);
-				c1.createGeneralizedKnotCarpet(false);
+				if(args[0].equals("find")){
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter = args[2];
+					int p = Integer.valueOf(args[3]);
+					int REALp = Integer.valueOf(args[4]);
+					int N = Integer.valueOf(args[5]);
+    	       		String[] starters = chosenStarter.split(",");
+	            	Carpet c1 = new Carpet(size, p , starters);
+            		c1.createKnotCarpet(false);
+            		c1.findNbricks(REALp, N);
+				}
+				/**/
+				else{
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter = args[2];
+					String[] starters = chosenStarter.split(",");
+					int p = Integer.valueOf(args[3]);
+					int acof = Integer.valueOf(args[4]);
+					int bcof = Integer.valueOf(args[5]);
+					Carpet c1 = new Carpet(size, p, starters, acof, bcof);
+					c1.createGeneralizedKnotCarpet(false);
+				}
 			}
 			else if(args.length == 7){
-				int size = Integer.valueOf(args[1]);
-				String chosenStarter = args[2];
-				String[] starters = chosenStarter.split(",");
-				int p = Integer.valueOf(args[3]);
-				int acof = Integer.valueOf(args[4]);
-				int bcof = Integer.valueOf(args[5]);
-				String ore = args[6];
-				String[] orie = ore.split(",");
-				Carpet c1 = new Carpet(size, p, starters, acof, bcof, orie);
-				c1.createGeneralizedKnotCarpet(false);
+				if(args[0].equals("findG")){
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter = args[2];
+					int p = Integer.valueOf(args[3]);
+					int REALp = Integer.valueOf(args[4]);
+					int N = Integer.valueOf(args[5]);
+    	       		String[] starters = chosenStarter.split(",");
+	            	Carpet c1 = new Carpet(size, p , starters);
+            		c1.createKnotCarpet(false);
+            		int s = Integer.valueOf(args[6]);
+            		//System.out.println(Math.pow(p, 1/REALp) + " " + s);
+            		c1.findNgrout(REALp, N, s);
+				}
+				else{
+					int size = Integer.valueOf(args[1]);
+					String chosenStarter = args[2];
+					String[] starters = chosenStarter.split(",");
+					int p = Integer.valueOf(args[3]);
+					int acof = Integer.valueOf(args[4]);
+					int bcof = Integer.valueOf(args[5]);
+					String ore = args[6];
+					String[] orie = ore.split(",");
+					Carpet c1 = new Carpet(size, p, starters, acof, bcof, orie);
+					c1.createGeneralizedKnotCarpet(false);
+				}
 			}
 		}
 	}
